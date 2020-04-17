@@ -3,19 +3,24 @@ package dining_problem.domain;
 import lombok.Getter;
 import lombok.Setter;
 import dining_problem.strategies.ActingStrategy;
+import lombok.extern.slf4j.Slf4j;
 
-@Setter
-@Getter
+
+@Slf4j
 public class Philosopher extends Thread {
-
     private String name;
     private Fork rightFork;
     private Fork leftFork;
-    private boolean thinking = true;
+    private boolean thinking;
+    @Setter
+    @Getter
     private boolean tookFirstFork;
+    @Setter
+    @Getter
     private boolean tookSecondFork;
     private boolean doneEating;
     private boolean tookForks;
+    @Getter
     private ActingStrategy strategy;
 
     public Philosopher(String name, Fork rightFork, Fork leftFork, ActingStrategy strategy) {
@@ -33,12 +38,13 @@ public class Philosopher extends Thread {
 
     void act(){
         while (thinking){
-            System.out.println(name + " trying to get forks -" + rightFork.getId()+" and "+leftFork.getId());
+
+            log.info(name + " trying to get forks -" + rightFork.getId()+" and "+leftFork.getId());
             tookForks = strategy.getForks(rightFork, leftFork);
             if(tookForks) {
                 useForks();
 
-                System.out.println(name + " is going to return the forks -" + rightFork.getId()+" and "+leftFork.getId());
+                log.info(name + " is going to return the forks -" + rightFork.getId()+" and "+leftFork.getId());
                 strategy.returnForks();
                 tookForks = false;
             }
@@ -58,7 +64,7 @@ public class Philosopher extends Thread {
 
     void eating() throws InterruptedException {
 
-        System.out.println(name + " is eating...!!!!!!!!!!!!!!");
+        log.info(name + " is eating...!!!!!!!!!!!!!!");
         Thread.sleep(3000);
         this.doneEating = true;
     }

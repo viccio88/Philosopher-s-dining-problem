@@ -3,7 +3,9 @@ package dining_problem;
 import dining_problem.domain.Fork;
 import dining_problem.domain.Philosopher;
 import dining_problem.strategies.StrategyFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class App {
     StrategyFactory factory = new StrategyFactory();
     Fork fork1 = new Fork(1,"fork1");
@@ -20,7 +22,10 @@ public class App {
 
     public static void main(String[] args) {
         App app = new App();
-        app.init("HierarchicalStrategy");
+        //app.init("HierarchicalStrategy");
+        app.init("SemaphoreStrategy");
+
+        log.info("Strategy - " + app.philosopher1.getStrategy().getClass());
 
         app.startDiner();
 
