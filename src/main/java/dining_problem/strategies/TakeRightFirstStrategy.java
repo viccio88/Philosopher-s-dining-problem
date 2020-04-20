@@ -1,7 +1,10 @@
 package dining_problem.strategies;
 
 import dining_problem.domain.Fork;
+import dining_problem.domain.Philosopher;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TakeRightFirstStrategy implements ActingStrategy {
 
     boolean tookRight;
@@ -14,28 +17,28 @@ public class TakeRightFirstStrategy implements ActingStrategy {
         if (tookRight){
             rightFork.setAvailable(true);
             tookRight = false;
-            System.out.println("returned right fork "+ rightFork.getName());
+            log.info("returned right fork "+ rightFork.getName());
         }
         if (tookLeft){
             leftFork.setAvailable(true);
             tookLeft = false;
-            System.out.println("returned left fork "+ leftFork.getName());
+            log.info("returned left fork "+ leftFork.getName());
         }
     }
 
     @Override
-    public boolean getForks(Fork rightFork, Fork leftFork) {
+    public boolean getForks(Fork rightFork, Fork leftFork, Philosopher philosopher) {
         this.rightFork = rightFork;
         this.leftFork = leftFork;
         if (!tookRight && rightFork.isAvailable()){
             rightFork.setAvailable(false);
             tookRight = true;
-            System.out.println("took the right fork "+ rightFork.getName());
+            log.info("took the right fork "+ rightFork.getName());
         }
         if (tookRight && leftFork.isAvailable()){
             leftFork.setAvailable(false);
             tookLeft = true;
-            System.out.println("took the left fork "+ leftFork.getName());
+            log.info("took the left fork "+ leftFork.getName());
             return true;
         }
         return false;

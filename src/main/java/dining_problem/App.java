@@ -5,9 +5,14 @@ import dining_problem.domain.Philosopher;
 import dining_problem.strategies.StrategyFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.CountDownLatch;
+
+import static java.lang.Thread.sleep;
+
 @Slf4j
 public class App {
     StrategyFactory factory = new StrategyFactory();
+    CountDownLatch entryCountDown;
     Fork fork1 = new Fork(1,"fork1");
     Fork fork2 = new Fork(2,"fork2");
     Fork fork3 = new Fork(3,"fork3");
@@ -22,8 +27,10 @@ public class App {
 
     public static void main(String[] args) {
         App app = new App();
+        //app.init("default");
         //app.init("HierarchicalStrategy");
-        app.init("SemaphoreStrategy");
+        //app.init("SemaphoreStrategy");
+        app.init("GuardedBlocks");
 
         log.info("Strategy - " + app.philosopher1.getStrategy().getClass());
 
@@ -37,13 +44,20 @@ public class App {
         philosopher3.start();
         philosopher4.start();
         philosopher5.start();
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //entryCountDown.countDown();
     }
 
     private void init(String className){
-         philosopher1 = new Philosopher("philosopher1", fork1, fork5, factory.create(className));
-         philosopher2 = new Philosopher("philosopher2", fork2, fork1, factory.create(className));
-         philosopher3 = new Philosopher("philosopher3", fork3, fork2, factory.create(className));
-         philosopher4 = new Philosopher("philosopher4", fork4, fork3, factory.create(className));
-         philosopher5 = new Philosopher("philosopher5", fork5, fork4, factory.create(className));
+        entryCountDown = new CountDownLatch(1);
+         philosopher1 = new Philosopher("philosopher1", fork5, fork1, factory.create(className), entryCountDown);
+         philosopher2 = new Philosopher("philosopher2", fork1, fork2, factory.create(className), entryCountDown);
+         philosopher3 = new Philosopher("philosopher3", fork2, fork3, factory.create(className), entryCountDown);
+         philosopher4 = new Philosopher("philosopher4", fork3, fork4, factory.create(className), entryCountDown);
+         philosopher5 = new Philosopher("philosopher5", fork4, fork5, factory.create(className), entryCountDown);
     }
 }
