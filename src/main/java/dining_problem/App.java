@@ -29,8 +29,8 @@ public class App {
         App app = new App();
         //app.init("default");
         //app.init("HierarchicalStrategy");
-        //app.init("SemaphoreStrategy");
-        app.init("GuardedBlocks");
+        app.init("SemaphoreStrategy");
+        //app.init("GuardedBlocks");
 
         log.info("Strategy - " + app.philosopher1.getStrategy().getClass());
 
